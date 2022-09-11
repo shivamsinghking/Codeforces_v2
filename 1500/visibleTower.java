@@ -25,8 +25,71 @@ public class Main {
     }
 
     public static void solve() {
-         
+        int n = sc.nextInt();
+        int[] arr = sc.readArrayInt(n);
 
+        Stack<Integer> st = new Stack<>();
+
+        int[] right = new int[n];
+        for (int i = 0; i < n; i++) {
+            while (st.size() > 0 && arr[st.peek()] < arr[i]) {
+                right[st.pop()] = i;
+            }
+            st.push(i);
+        }
+
+        while (st.size() > 0) {
+            right[st.pop()] = n;
+        }
+
+        int[] left = new int[n];
+        for (int i = n - 1; i >= 0; i--) {
+            while (st.size() > 0 && arr[st.peek()] < arr[i]) {
+                left[st.pop()] = i;
+            }
+            st.push(i);
+        }
+
+        while (st.size() > 0) {
+            left[st.pop()] = -1;
+        }
+
+        int[] ans = new int[n];
+
+        int[] rr = new int[n];
+        int[] ll = new int[n];
+
+        for(int i = n - 1; i >= 0; i--){
+            int nxtG = right[i];
+            if(nxtG < n){
+                rr[i] = rr[nxtG] + 1;
+            }   
+        }
+
+        for(int i = 0; i < n; i++){
+            int nxtG = left[i];
+            if(nxtG >= 0){
+                ll[i] = ll[nxtG] + 1;
+            }
+        }
+
+        // For each element, we have to find the number of elements to the left and right of it which are greater than it.
+        for(int i = 0; i < n; i++){
+            if(i - 1 >= 0){
+                ans[i]++;
+                ans[i] += ll[i-1];
+            }
+
+            if(i+1 < n){
+                ans[i]++;
+                ans[i] += rr[i+1];
+            }
+        }
+        for(int i: ans){
+            out.print(i + " ");
+        }
+
+        out.println();
     }
 
     public static long gcd(long a, long b) {
@@ -39,20 +102,36 @@ public class Main {
     }
 
     static long MOD = 1000000007;
-    static void reverseSort(int[] arr){List<Integer> list = new ArrayList<>();for (int i=0; i<arr.length; i++){list.add(arr[i]);}Collections.sort(list, Collections.reverseOrder());for (int i = 0; i < arr.length; i++){arr[i] = list.get(i);}}
+
+    static void reverseSort(int[] arr) {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < arr.length; i++) {
+            list.add(arr[i]);
+        }
+        Collections.sort(list, Collections.reverseOrder());
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = list.get(i);
+        }
+    }
+
     static void sort(int[] a) {
-        ArrayList<Integer> l=new ArrayList<>();
-        for (int i:a) l.add(i);
+        ArrayList<Integer> l = new ArrayList<>();
+        for (int i : a)
+            l.add(i);
         Collections.sort(l);
-        for (int i=0; i<a.length; i++) a[i]=l.get(i);
+        for (int i = 0; i < a.length; i++)
+            a[i] = l.get(i);
     }
-    static void sort(long[] a){
-        ArrayList<Long> l=new ArrayList<>();
-        for (long i:a) l.add(i);
+
+    static void sort(long[] a) {
+        ArrayList<Long> l = new ArrayList<>();
+        for (long i : a)
+            l.add(i);
         Collections.sort(l);
-        for (int i=0; i<a.length; i++) a[i]=l.get(i);
+        for (int i = 0; i < a.length; i++)
+            a[i] = l.get(i);
     }
-    
+
     static class Kioken {
         // FileInputStream br = new FileInputStream("input.txt");
         BufferedReader br;
@@ -126,17 +205,17 @@ public class Main {
             return true;
         }
 
-        public int[] readArrayInt(int n){
+        public int[] readArrayInt(int n) {
             int[] arr = new int[n];
-            for(int i = 0; i < n; i++){
+            for (int i = 0; i < n; i++) {
                 arr[i] = nextInt();
             }
             return arr;
         }
 
-        public long[] readArrayLong(int n){
+        public long[] readArrayLong(int n) {
             long[] arr = new long[n];
-            for(int i = 0; i < n; i++){
+            for (int i = 0; i < n; i++) {
                 arr[i] = nextLong();
             }
             return arr;

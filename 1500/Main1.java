@@ -4,7 +4,7 @@ import java.util.*;
  class Teacher{
   String name = "Shivam";
 }
- class Student{
+     class Student{
   String name = "Abhinav";
 }
 
