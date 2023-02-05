@@ -1,0 +1,216 @@
+import java.io.*;
+import java.util.*;
+
+public class C {
+    static PrintWriter out;
+    static Kioken sc;
+    static boolean checkOnlineJudge = System.getProperty("ONLINE_JUDGE") == null;
+
+    public static void main(String[] args) throws FileNotFoundException {
+        if (checkOnlineJudge) {
+            out = new PrintWriter("E:/CF_V2/output.txt");
+            sc = new Kioken(new File("E:/CF_V2/input.txt"));
+        } else {
+            out = new PrintWriter((System.out));
+            sc = new Kioken();
+        }
+
+        int tt = 1;
+        tt = sc.nextInt();
+        while (tt-- > 0) {
+            solve();
+        }
+        out.flush();
+        out.close();
+    }
+
+/*
+
+*/
+    public static void solve() {
+        int n = sc.nextInt();
+        int[] arr = sc.readArrayInt(n);
+        
+        List<int[]> ll = new ArrayList<>();
+        for(int i = 0; i < n; i++){
+        	ll.add(new int[]{arr[i], i});
+        }
+        
+        ll.sort((a, b) -> a[0] - b[0]);
+        
+        boolean[] visited1 = new boolean[n+1];
+        boolean[] visited2 = new boolean[n+1];
+        
+        TreeSet<Integer> set1 = new TreeSet<>();
+        TreeSet<Integer> set2 = new TreeSet<>();
+        
+        for(int i = 1; i <= n; i++){
+        	set1.add(i);
+        	set2.add(i);
+        }
+        
+        int[] ans1 = new int[n];
+        int[] ans2 = new int[n];
+        for(int i = 0; i < n; i++){
+        	int[] v = ll.get(i);
+        	int val = v[0], index = v[1];
+        	if(visited1[val] == false){
+        		ans1[index] = val;
+        		visited1[val] = true;
+        		set1.remove(val);
+        	}else if(visited2[val] == false){
+        		ans2[index] = val;
+        		visited2[val] = true;
+        		set2.remove(val);
+        	}else{
+        		out.println("NO");
+        		return;
+        	}
+        }
+        
+        for(int i = 0; i < n; i++){
+        	if(visited1[ans1[i]]){
+        		int val = ans1[i];
+        		if(set2.floor(val) != null){
+        			int v = set2.floor(val);
+        			ans2[i] = v;
+        			visited2[v] = true;
+        			set2.remove(v);
+        		}else{
+        			out.println("NO");
+        			return;
+        		}
+        	}else{
+        		int val = ans2[i];
+        		if(set1.floor(val) != null){
+        			int v = set1.floor(val);
+        			ans1[i] = v; 
+        			visited1[v] = true;
+        			set1.remove(v);
+        		}else{
+        			out.println("NO");
+        			return;
+        		}
+        	}
+        }
+        out.println("YES");
+        for(int i = 0; i < n; i++) out.print(ans1[i] + " ");
+        out.println();
+        for(int i = 0; i < n; i++) out.print(ans2[i] + " ");
+        out.println();
+    }
+
+    public static long gcd(long a, long b) {
+        while (b != 0) {
+            long rem = a % b;
+            a = b;
+            b = rem;
+        }
+        return a;
+    }
+
+    static long MOD = 1000000007;
+    static void reverseSort(int[] arr){List<Integer> list = new ArrayList<>();for (int i=0; i<arr.length; i++){list.add(arr[i]);}Collections.sort(list, Collections.reverseOrder());for (int i = 0; i < arr.length; i++){arr[i] = list.get(i);}}
+    static void sort(int[] a) {
+        ArrayList<Integer> l=new ArrayList<>();
+        for (int i:a) l.add(i);
+        Collections.sort(l);
+        for (int i=0; i<a.length; i++) a[i]=l.get(i);
+    }
+    static void sort(long[] a){
+        ArrayList<Long> l=new ArrayList<>();
+        for (long i:a) l.add(i);
+        Collections.sort(l);
+        for (int i=0; i<a.length; i++) a[i]=l.get(i);
+    }
+    
+    static class Kioken {
+        // FileInputStream br = new FileInputStream("input.txt");
+        BufferedReader br;
+        StringTokenizer st;
+
+        Kioken(File filename) {
+            try {
+                FileReader fr = new FileReader(filename);
+                br = new BufferedReader(fr);
+                st = new StringTokenizer("");
+
+            } catch (Exception e) {
+                // TODO: handle exception
+                e.printStackTrace();
+            }
+        }
+
+        Kioken() {
+            try {
+                br = new BufferedReader(new InputStreamReader(System.in));
+                st = new StringTokenizer("");
+
+            } catch (Exception e) {
+                // TODO: handle exception
+                e.printStackTrace();
+            }
+        }
+
+        public String next() {
+            while (!st.hasMoreTokens()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        public int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        public long nextLong() {
+            return Long.parseLong(next());
+        }
+
+        public double nextDouble() {
+            return Double.parseDouble(next());
+        }
+
+        public String nextLine() {
+            try {
+                return br.readLine();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        public boolean hasNext() {
+            String next = null;
+            try {
+                next = br.readLine();
+            } catch (Exception e) {
+            }
+            if (next == null || next.length() == 0) {
+                return false;
+            }
+            st = new StringTokenizer(next);
+            return true;
+        }
+
+        public int[] readArrayInt(int n){
+            int[] arr = new int[n];
+            for(int i = 0; i < n; i++){
+                arr[i] = nextInt();
+            }
+            return arr;
+        }
+
+        public long[] readArrayLong(int n){
+            long[] arr = new long[n];
+            for(int i = 0; i < n; i++){
+                arr[i] = nextLong();
+            }
+            return arr;
+        }
+    }
+}

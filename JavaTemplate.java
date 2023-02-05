@@ -15,19 +15,18 @@ public class JavaTemplate {
     }
 
     public static void solve() {
-        out.println("Shviam singh");
+        
     }
 
     static ArrayList<Long> prime_factors(long n) {
         ArrayList<Long> ans = new ArrayList<Long>();
         while (n % 2 == 0) {
             ans.add(2L);
-            return ans;
+            n = n/2;
         }
         for (long i = 3; i <= Math.sqrt(n); i++) {
             while (n % i == 0) {
                 ans.add(i);
-                return ans;
             }
         }
         if (n > 2) {
@@ -356,7 +355,18 @@ public class JavaTemplate {
             return ans;
         }
     }
-
+    // ------------------ 2D prefix sum ------------------//
+    // int[][] pfx = new int[maxX + 1][maxY + 1];
+    //     for (int i = 1; i < maxX; i++) {
+    //         for (int j = 1; j < maxY; j++) {
+    //             pfx[i][j] = brr[i][j] + pfx[i-1][j] + pfx[i][j-1] - pfx[i-1][j-1];
+    //         }
+    // }
+    
+    // static int query(int[][] pfx, int fromRow, int fromCol, int toRow, int toCol){
+    //     return pfx[toRow][toCol] - pfx[fromRow - 1][toCol] - pfx[toRow][fromCol - 1] + pfx[fromRow - 1][fromCol - 1];
+    //  }
+       
     // ------------------------------> BIT 2D ------------------------------------------- //
     static class BIT {
         long[][] tree;

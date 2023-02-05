@@ -25,8 +25,16 @@ public class A {
     }
 
     public static void solve() {
-         
-
+         int a = sc.nextInt(), b = sc.nextInt(), c = sc.nextInt();
+         int a1 = Math.abs(a - 1);
+         int b1 = Math.abs(b - c) + Math.abs(c - 1);
+         if(a1 < b1){
+          out.println(1);
+         }else if(b1 < a1){
+          out.println(2);
+         }else{
+          out.println(3);
+         }
     }
 
     public static long gcd(long a, long b) {

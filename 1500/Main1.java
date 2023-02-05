@@ -1,19 +1,18 @@
 import java.io.*;
 import java.util.*;
 
- class Teacher{
-  String name = "Shivam";
-}
-     class Student{
-  String name = "Abhinav";
-}
-
-public class Main1 {
-    static PrintWriter out;
-    static Kioken sc;
-    static boolean checkOnlineJudge = System.getProperty("ONLINE_JUDGE") == null;
-
+public class Main {
     public static void main(String[] args) throws FileNotFoundException {
+        Solution s = new Solution();
+        s.solver();
+    }
+}
+
+class Solution {
+    PrintWriter out;
+    Kioken sc;
+    boolean checkOnlineJudge = System.getProperty("ONLINE_JUDGE") == null;
+    void solver() throws FileNotFoundException{
         if (checkOnlineJudge) {
             out = new PrintWriter("E:/CF_V2/output.txt");
             sc = new Kioken(new File("E:/CF_V2/input.txt"));
@@ -23,22 +22,83 @@ public class Main1 {
         }
 
         int tt = 1;
-        tt = sc.nextInt();
+        // tt = sc.nextInt();
         while (tt-- > 0) {
             solve();
         }
         out.flush();
         out.close();
     }
-
-  
-    public static void solve() {
+    
+    void solve(){
+       int n = sc.nextInt(), k = sc.nextInt() ;
+       
+       char[] arr = sc.nextLine().toCharArray();
+       
+       // bbac
+       // aabbababacccbbabaaaacccccbbbaaa
+       // out.println("--> " + n +  " " + k);
+       char[] ans = new char[n];
+       // out.println(Arrays.toString(ans));
+       if(k >= 3){
+        int cnt = 0;
          
-      Teacher t = new Student();
-      out.println(t.name);
+         ans[0] = arr[0];
+         for(int i = 1; i < n; i++){ 
+           HashSet<Character> set = new HashSet<>();
+           set.add('A');
+           set.add('B');
+           set.add('C');
+           if(arr[i] == arr[i - 1]){
+             set.remove(arr[i]);
+             if(i + 1 < n){
+                set.remove(arr[i+1]);
+             }
+             for(char j: set){
+                    ans[i] = j;
+                    arr[i] = j;
+                    cnt++;
+                    break;
+                }
+           }else{
+            ans[i] = arr[i];
+           }
+         }
+         // out.println(" --> ------>> ");
+         out.println(cnt);
+         for(int i = 0; i < n; i++) out.print(ans[i]);
+         out.println();
+         return; 
+       }else{
+        char[] ans1 = new char[n];
+        char[] ans2 = new char[n];
+        ans1[0] = 'A';
+        for(int i = 1; i < n; i++){
+            ans1[i] = (ans1[i - 1] == 'A') ? 'B' : 'A';
+        }
+        
+        ans2[0] = 'B';
+        for(int i = 1; i < n; i++) ans2[i] = ans2[i - 1] == 'A' ? 'B' : 'A';
+        
+        int cnt1 = 0, cnt2 = 0;
+        for(int i = 0; i < n; i++) if(ans1[i] != arr[i]) cnt1++;
+        for(int i = 0; i < n; i++) if(ans2[i] != arr[i]) cnt2++;
+        
+        // out.println(Arrays.toString(ans2) + " " + cnt2);
+        if(cnt1 < cnt2){
+            out.println(cnt1);
+            for(int i = 0; i < n; i++) out.print(ans1[i]);
+        }else{
+            out.println(cnt2);
+            for(int i = 0; i < n; i++) out.print(ans2[i]);
+        }
+        out.println();
+        
+       }
+         
     }
-
-    public static long gcd(long a, long b) {
+    
+    long gcd(long a, long b) {
         while (b != 0) {
             long rem = a % b;
             a = b;
@@ -47,22 +107,22 @@ public class Main1 {
         return a;
     }
 
-    static long MOD = 1000000007;
-    static void reverseSort(int[] arr){List<Integer> list = new ArrayList<>();for (int i=0; i<arr.length; i++){list.add(arr[i]);}Collections.sort(list, Collections.reverseOrder());for (int i = 0; i < arr.length; i++){arr[i] = list.get(i);}}
-    static void sort(int[] a) {
-    ArrayList<Integer> l=new ArrayList<>();
-    for (int i:a) l.add(i);
-    Collections.sort(l);
-    for (int i=0; i<a.length; i++) a[i]=l.get(i);
-  }
-    static void sort(long[] a){
-        ArrayList<Long> l=new ArrayList<>();
-    for (long i:a) l.add(i);
-    Collections.sort(l);
-    for (int i=0; i<a.length; i++) a[i]=l.get(i);
+    long MOD = 1000000007;
+    void reverseSort(int[] arr){List<Integer> list = new ArrayList<>();for (int i=0; i<arr.length; i++){list.add(arr[i]);}Collections.sort(list, Collections.reverseOrder());for (int i = 0; i < arr.length; i++){arr[i] = list.get(i);}}
+    void sort(int[] a) {
+        ArrayList<Integer> l=new ArrayList<>();
+        for (int i:a) l.add(i);
+        Collections.sort(l);
+        for (int i=0; i<a.length; i++) a[i]=l.get(i);
     }
-    
-    static class Kioken {
+    void sort(long[] a){
+        ArrayList<Long> l=new ArrayList<>();
+        for (long i:a) l.add(i);
+        Collections.sort(l);
+        for (int i=0; i<a.length; i++) a[i]=l.get(i);
+    }
+}
+class Kioken {
         // FileInputStream br = new FileInputStream("input.txt");
         BufferedReader br;
         StringTokenizer st;
@@ -151,4 +211,3 @@ public class Main1 {
             return arr;
         }
     }
-}

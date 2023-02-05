@@ -1,6 +1,14 @@
 import java.io.*;
 import java.util.*;
 
+/**
+ * 1. if x1%y = r1 and x2%y = r2 then (r1*r2)%y = (x1*x2)%y -> important relation
+ * 2. if some arrangement related problems are there, check for min and max range, for finding relations.
+ * 3. Putting values in map is not always O(1), if there some error using Map, try using array instead 
+      https://codeforces.com/contest/1731/problem/C  -> this is ques. just by replacing map with array, it is Accepted
+   4.    
+ */
+
 public class Main {
     static PrintWriter out;
     static Kioken sc;
@@ -27,8 +35,7 @@ public class Main {
     }
 
     public static void solve() {
-      
-
+        
     }
 
     public static long gcd(long a, long b) {
