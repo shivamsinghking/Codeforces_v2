@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class Main {
+public class Main1 {
     public static void main(String[] args) throws FileNotFoundException {
         Solution s = new Solution();
         s.solver();
@@ -22,7 +22,7 @@ class Solution {
         }
 
         int tt = 1;
-        // tt = sc.nextInt();
+        tt = sc.nextInt();
         while (tt-- > 0) {
             solve();
         }
@@ -30,72 +30,89 @@ class Solution {
         out.close();
     }
     
-    void solve(){
-       int n = sc.nextInt(), k = sc.nextInt() ;
+    static long solve(int N, int M, int[] A, int[][] E){
+       Set<Integer> set = new HashSet<>();
+       for(int i = 1; i <= N; i++) set.add(i);
        
-       char[] arr = sc.nextLine().toCharArray();
+       int[][] arr = new int[N + 1][2];
+       arr[0][0] = (int)1e7 + 5;
+       arr[0][1] = (int)1e7 + 5;
        
-       // bbac
-       // aabbababacccbbabaaaacccccbbbaaa
-       // out.println("--> " + n +  " " + k);
-       char[] ans = new char[n];
-       // out.println(Arrays.toString(ans));
-       if(k >= 3){
-        int cnt = 0;
-         
-         ans[0] = arr[0];
-         for(int i = 1; i < n; i++){ 
-           HashSet<Character> set = new HashSet<>();
-           set.add('A');
-           set.add('B');
-           set.add('C');
-           if(arr[i] == arr[i - 1]){
-             set.remove(arr[i]);
-             if(i + 1 < n){
-                set.remove(arr[i+1]);
-             }
-             for(char j: set){
-                    ans[i] = j;
-                    arr[i] = j;
-                    cnt++;
-                    break;
-                }
+       for(int i = 1; i <= N; i++){
+        arr[i][0] = A[i];
+        arr[i][1] = i;
+       }    
+       
+       Arrays.sort(arr, (a, b) -> a[0] - b[0]);
+       
+       List<Set<Integer>> ll = new ArrayList<>();
+              List<Set<Integer>> l1 = new ArrayList<>();
+       for(int i = 0; i <= N + 1; i++){
+        ll.add(new HashSet<>());
+        l1.add(new HashSet<>());
+     }
+       
+       for(int i = 0; i < M; i++){
+        int u = E[i][0];
+        int v = E[i][1];
+        ll.get(u).add(v);
+        ll.get(v).add(u);
+       }
+       
+       int max = (int)1e7 + 5;
+       long ans = 0L, prev = max;
+       
+       for(int i = 0; i < N; i++){
+         if(set.size() == 0) break;
+         int node = arr[i][1];
+         int val = arr[i][0];
+         // System.out.println(" node " + node + " " + val + " " + ans);
+         HashSet<Integer> newSet = new HashSet<>();
+         long sum = 0;
+         // if(prev != max){
+         //    if(set.contains(node)){
+         //        sum += prev*val;
+         //    }
+         // }
+        
+         // set.remove(node);
+         for(int j: set){
+           if(j == node) continue;
+           if(ll.get(j).size() > 0 && ll.get(j).contains(node)){
+             continue;
            }else{
-            ans[i] = arr[i];
+             sum += (l1.get(j).contains(node)) ? 0 : A[j];
+             l1.get(node).add(j);
+             System.out.println(l1.get(j) + " j " + j + " " + node);
+             // prev = Math.min(prev, A[j]);
+             newSet.add(j);
            }
          }
-         // out.println(" --> ------>> ");
-         out.println(cnt);
-         for(int i = 0; i < n; i++) out.print(ans[i]);
-         out.println();
-         return; 
-       }else{
-        char[] ans1 = new char[n];
-        char[] ans2 = new char[n];
-        ans1[0] = 'A';
-        for(int i = 1; i < n; i++){
-            ans1[i] = (ans1[i - 1] == 'A') ? 'B' : 'A';
-        }
-        
-        ans2[0] = 'B';
-        for(int i = 1; i < n; i++) ans2[i] = ans2[i - 1] == 'A' ? 'B' : 'A';
-        
-        int cnt1 = 0, cnt2 = 0;
-        for(int i = 0; i < n; i++) if(ans1[i] != arr[i]) cnt1++;
-        for(int i = 0; i < n; i++) if(ans2[i] != arr[i]) cnt2++;
-        
-        // out.println(Arrays.toString(ans2) + " " + cnt2);
-        if(cnt1 < cnt2){
-            out.println(cnt1);
-            for(int i = 0; i < n; i++) out.print(ans1[i]);
-        }else{
-            out.println(cnt2);
-            for(int i = 0; i < n; i++) out.print(ans2[i]);
-        }
-        out.println();
-        
-       }
          
+         System.out.println(newSet + " -- " + sum*val + " " + set);
+         for(int j: newSet) set.remove(j);
+         ans += sum*(long)val;
+       }
+       
+       return (set.size() == 0) ? ans : -1;
+    }
+    
+    void solve(){
+       int n = sc.nextInt();
+       int m = sc.nextInt();
+       int[] arr = new int[n + 1];
+       for(int i = 1; i <= n; i++) arr[i] = sc.nextInt();
+       
+       int[][] brr = new int[m][2];
+       for(int i = 0; i < m; i++){
+        int u = sc.nextInt();
+        int v = sc.nextInt();
+        brr[i][0] = u;
+        brr[i][1] = v;
+       }
+       
+       long ans = solve(n, m, arr, brr);
+       out.println(ans);
     }
     
     long gcd(long a, long b) {

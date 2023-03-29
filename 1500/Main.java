@@ -23,50 +23,15 @@ class Solution {
 
         int tt = 1;
         tt = sc.nextInt();
-        List<Integer> primes = sieveOfEratosthenes(100);
         while (tt-- > 0) {
-            solve(primes);
+            solve();
         }
         out.flush();
         out.close();
     }
     
-    void solve(List<Integer> primes){
-       int n = sc.nextInt();
-       int[] arr = sc.readArrayInt(n);
+    void solve(){
        
-       boolean flag = true;
-       for(int p: primes){
-        int[] cnt = new int[p+1];
-        for(int j = 0; j < n; j++) cnt[arr[j]%p]++;
-        
-        for(int j = 0; j <= p; j++) if(cnt[j] > 1) flag = false;
-       }
-       
-       if(flag){
-        out.println("YES");
-       }else{
-        out.println("NO");  
-       }
-       return;
-    }
-    
-    List<Integer> sieveOfEratosthenes(int n) {
-        List<Integer> result = new ArrayList<>();
-        boolean[] prime = new boolean[n + 1];
-        for (int i = 0; i <= n; i++)
-            prime[i] = true;
- 
-        for (int p = 2; p * p <= n; p++) {
-            if (prime[p]) {
-                for (int i = p * p; i <= n; i += p) prime[i] = false;
-            }
-        }
- 
-        for (int i = 2; i <= n; i++) {
-            if (prime[i]) result.add(i);
-        }
-        return result;
     }
     
     long gcd(long a, long b) {

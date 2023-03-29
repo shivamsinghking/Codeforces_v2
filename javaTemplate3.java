@@ -81,6 +81,38 @@ public class Main {
         }
         return isPrime;
     }
+    
+    /// ----------------------- getAllPrimeFactors ---------------------------- ///
+    public static List<Integer> getAllPrimeFactors(int n, List<Integer> primes){
+        List<Integer> p = new ArrayList<>();
+        for(int i: primes){
+            if(n == 1) break;
+            if(i*i > n) break;
+            if(n%i != 0) continue;
+            while(n%i == 0){
+                n = n/i;
+                p.add(i);
+            }
+        }
+        
+        if(n != 1){
+            p.add(n);
+        }
+        return p;
+    }
+    
+    // --------------------- get all divisors ---------------------------------------------//
+    HashSet<Integer> getAllDiv(int n){
+        HashSet<Integer> set = new HashSet<>();
+        for(int i = 1; i*i <= n; i++){
+            if(n%i == 0){
+                set.add(i);
+                set.add(n/i);
+            }
+        }
+        return set;
+    }
+    // ----------------------------- ----------------------------------------------------------
     public static void reverse(int[] arr) {
         Arrays.sort(arr);
         int n = arr.length;
@@ -160,38 +192,16 @@ public class Main {
     // Calculating SPF (Smallest Prime Factor) for every
     // number till MAXN.
     // Time Complexity : O(nloglogn)
-    static int[] findingSpf(int n)
+   static int[] findingSpf(int MAXN)
     {
         
-        int MAXN = n;
-        int spf[] = new int[MAXN];
-        spf[1] = 1;
-        for (int i=2; i<MAXN; i++)
+      int[] spf = new int[MAXN];
+        for (int i = 2; i < MAXN; i++)
+            if (spf[i] == 0)
+                for (int j = i; j < MAXN; j += i)
+                    spf[j] = i;
       
-            // marking smallest prime factor for every
-            // number to be itself.
-            spf[i] = i;
-      
-        // separately marking spf for every even
-        // number as 2
-        for (int i=4; i<MAXN; i+=2)
-            spf[i] = 2;
-      
-        for (int i=3; i*i<MAXN; i++)
-        {
-            // checking if i is prime
-            if (spf[i] == i)
-            {
-                // marking SPF for all numbers divisible by i
-                for (int j=i*i; j<MAXN; j+=i)
-      
-                    // marking spf[j] if it is not
-                    // previously marked
-                    if (spf[j]==j)
-                        spf[j] = i;
-            }
-        }
-        return spf;
+      return spf;
     }
       
     // A O(log n) function returning primefactorization
@@ -210,7 +220,11 @@ public class Main {
         return ret;
     }
     
-
+    static List<Integer> getFactorOfGivenNumber(int n){
+        int[] spf = findingSpf(n+1000);
+        return getFactorization(n, spf);
+    }
+    
     public static int lower_bound(ArrayList<Integer> ar, int k) {
         int s = 0, e = ar.size();
         while (s != e) {
@@ -241,6 +255,14 @@ public class Main {
         return s;
     }
 
+    /// -------------- RANDOM -------
+    static final Random rng = new Random();
+ 
+    static int rand(int l, int r) {
+        return l + rng.nextInt(r - l + 1);
+    }
+    //---------------------------------------
+    
     static long MOD = 1000000007;
     static long power(long x, long y) {if (y < 0) return 1; long res = 1; x %= MOD; while (y!=0) {if ((y & 1)==1)res = mul(res, x); y >>= 1; x = mul(x, x);} return res;}
     static void ruffleSort(int[] a) {int n=a.length;Random r=new Random();for (int i=0; i<a.length; i++) {int oi=r.nextInt(n), temp=a[i];a[i]=a[oi];a[oi]=temp;}Arrays.sort(a);}
@@ -501,7 +523,96 @@ public class Main {
             return query(l, r, 0, givenArr.length - 1, 0);
         }
     }
-
+    /// -------------------------- SEGMENT - TREE [ LAZY PROPAGATE ] -------------- ///
+    
+    class SegmentTreeLazy{
+        int[] seg, lazy;
+        int n;
+        int[] givenArr;
+        int MAXN = 4000000;
+        SegmentTreeLazy(int[] nums){
+            this.seg = new int[MAXN];
+            this.lazy = new int[MAXN];
+            this.givenArr = nums;
+            this.n = givenArr.length;
+        }
+        
+        void build(int index, int l, int r) {
+            if (l == r) {
+                seg[index] = givenArr[l];
+                return;
+            }
+            int mid = (l + r) / 2;
+            build(2*index + 1, l, mid);
+            build(2*index + 2, mid + 1, r);
+            seg[index] = seg[2*index + 1] + seg[2*index + 2];
+        }
+        
+        // HINT: here we are adding.., can be changed acc. to question
+        void rangeUpdate(int ind, int low, int high, int l, int r, int val){
+            if(lazy[ind] != 0){
+                seg[ind] += (high - low + 1)*lazy[ind];
+                if(low != high){
+                    lazy[2*ind + 1] += lazy[ind];
+                    lazy[2*ind + 2] += lazy[ind];
+                }
+                
+                lazy[ind] = 0;
+            }
+            
+            if(r < low || l > high) return ;
+            if(low >= l && high <= r){
+                seg[ind] += (high - low + 1)*val;
+                // if this is not leaf node
+                if(low != high){
+                    lazy[2*ind + 1] += val;
+                    lazy[2*ind + 2] += val;
+                }
+                return;
+            }
+            
+            
+            int mid = (low + high)/2;
+            rangeUpdate(2*ind + 1, low, mid, l, r, val);
+            rangeUpdate(2*ind + 2, mid + 1, high, l, r, val);
+            seg[ind] += seg[2*ind + 1] + seg[2*ind + 2];
+            return;
+        }
+        // range update
+        void rangeUpdate(int l, int r, int val){
+            // NOTE: this " val " can be added, subtracted, xor etc.
+            // val = adding val to range [l, r]
+            rangeUpdate(0, 0, n - 1, l, r, val);
+        }
+        
+        int query(int ind, int low, int high, int l, int r){
+            if(lazy[ind] != 0){
+                seg[ind] += (high - low + 1)*lazy[ind];
+                if(low != high){
+                    lazy[2*ind + 1] = lazy[ind];
+                    lazy[2*ind + 2] = lazy[ind];
+                }
+                lazy[ind] = 0;
+            }
+            
+            if(r < low || high < l) return 0;
+            
+            // total - overlapping
+            if(low >= l && high <= r){
+                return seg[ind];
+            }
+            
+            int mid = (low + high)/2;
+            int le = query(2*ind + 1, low, mid, l, r);
+            int re = query(2*ind + 2, mid + 1, high, l, r);
+            return le + re;
+        }
+        void query(int l, int r){
+            
+        }
+    }
+    //// -------------------------------------------------------------------------///////
+    
     /////////////// -------------- GRAPH -------------------------------------------//////
         static class Graph {
         ArrayList<ArrayList<Integer>> gr;

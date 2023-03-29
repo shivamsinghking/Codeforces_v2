@@ -27,6 +27,7 @@ public class JavaTemplate {
         for (long i = 3; i <= Math.sqrt(n); i++) {
             while (n % i == 0) {
                 ans.add(i);
+                n = n/i;
             }
         }
         if (n > 2) {
